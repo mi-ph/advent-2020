@@ -1,28 +1,12 @@
 def get_colour(line):
-    colour = ""
-    spaces = 0
-    for char in line:
-        if char == ' ':
-            spaces += 1
-        if spaces == 2:
-            break
-        colour += char
-    return colour
+    return ' '.join(line.split(' ')[0:2])
 
 def get_other_colours(line):
     colours = []
-    numeric = False
-    number = ""
-    i = 0
-    for char in line:
-        i += 1
-        if char > '0' and char < '9':
-            numeric = True
-            number += char
-        elif numeric == True:
-            colours.append((get_colour(line[i:]), int(number)))
-            numeric = False
-            number = ""
+    words = line.split(' ')
+    for i in range(len(words)):
+        if words[i].isnumeric():
+            colours.append((' '.join(words[i+1:i+3]), int(words[i])))
     return colours
 
 def contains(colours, colour):
