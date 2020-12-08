@@ -1,7 +1,7 @@
 def get_inst(line):
-    i = line.split(' ')[0]
+    k = line.split(' ')[0]
     v = int(line.split(' ')[1])
-    return (i, v)
+    return (k, v)
 
 def run(instructions, showResultInError=True):
     acc = 0
@@ -15,21 +15,19 @@ def run(instructions, showResultInError=True):
             if showResultInError:
                 print(f"Program error: accumulator {acc}")
             break
-        i = instructions[pc][0]
-        v = instructions[pc][1]
 
+        (k, v) = instructions[pc]
         visited[pc] = 1
 
-        if i == "acc":
+        if k == "acc":
             acc += v
-        if i == "jmp":
+        if k == "jmp":
             pc += v
         else:
             pc += 1
 
 with open("input.txt", "r") as fh:
     lines = fh.readlines()
-    colours = {}
     instructions = []
     for line in lines:
         instructions.append(get_inst(line))
@@ -37,18 +35,15 @@ with open("input.txt", "r") as fh:
     run(instructions)
 
     for i in range(len(instructions)):
-        k = instructions[i][0]
-        v = instructions[i][1]
-
-        original = (k, v)
+        (k, v) = instructions[i]
 
         if k == "jmp":
-            replace = ("nop", v)
+            k_fix = "nop"
         elif k == "nop":
-            replace = ("jmp", v)
+            k_fix = "jmp"
         else:
             continue
 
-        instructions[i] = replace
+        instructions[i] = (k_fix, v)
         run(instructions, False)
-        instructions[i] = original
+        instructions[i] = (k, v)
