@@ -1,8 +1,3 @@
-def process(line):
-    k = line.split(' ')[0]
-    v = int(line.split(' ')[1])
-    return (k, v)
-
 def last25(array, i):
     return array[i-25:i]
 
