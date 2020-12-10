@@ -1,6 +1,3 @@
-DAY = 10
-YEAR = 2020
-
 def getAdaptersInRange(ad, mx, mn):
     c = []
     for a in ad:
@@ -57,32 +54,14 @@ def main(lines):
         totalChains *= newChains
     print(f"Puzzle 2: {totalChains}")
 
-def aoc_input(year, day):
+def run(function, input_file):
     try:
-        with open("input.txt", "r") as fh:
-            return fh.readlines()
+        with open(input_file, "r") as fh:
+            function(fh.readlines())
     except:
-        try:
-            print(f"input.txt not located. Downloading input for day {day}, {year}")
-            import subprocess as sp
-            import os
-            sp.call(f'curl "https://adventofcode.com/{year}/day/{day}/input" -s -o input.txt --cookie session={os.environ["AOC_SESSION"]}')
-            with open("input.txt", "r") as fh:
-                return fh.readlines()
-        except:
-            print(f"Unable to download. Try manually?")
-            raise FileNotFoundError
+        print(f"Couldn't read {input_file}. Please ensure it is in the directory and try again.")
 
-def test_input():
-    try:
-        with open("test.txt", "r") as fh:
-            return fh.readlines()
-    except:
-        print("Test input not found. Skipping")
-        return None
 print("TEST:")
-test = test_input()
-if test is not None:
-    main(test)
+run(main, "test.txt")
 print("\nMAIN:")
-main(aoc_input(YEAR, DAY))
+run(main, "input.txt")
