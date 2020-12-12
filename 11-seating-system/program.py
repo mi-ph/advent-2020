@@ -1,206 +1,68 @@
+from copy import deepcopy
+EMPTY = 'L'
+FILLED = '#'
 
-def seatsFree(i, j, m):
-    seatsEmpty = 0
-    for ii in range(i-1,i+2):
-        for jj in range(j-1,j+2):
-            if not(ii == i and jj == j):
-                if m[ii][jj] <= 1:
-                    seatsEmpty += 1
-    return seatsEmpty
-
-def seatsFree2(i, j, m):
-    seatsEmpty = 8
-    width = len(m[0])
-    height = len(m)
-    # right
-    ii = i+1
-    jj = j
-    while 0 < ii < height and 0 < jj < width:
-        if m[ii][jj] == 1:
-            break
-        if m[ii][jj] == 2:
-            seatsEmpty -= 1
-            break
-        ii += 1
-    # left
-    ii = i-1
-    jj = j
-    while 0 < ii < height and 0 < jj < width:
-        if m[ii][jj] == 1:
-            break
-        if m[ii][jj] == 2:
-            seatsEmpty -= 1
-            break
-        ii += -1
-    # down
-    ii = i
-    jj = j+1
-    while 0 < ii < height and 0 < jj < width:
-        if m[ii][jj] == 1:
-            break
-        if m[ii][jj] == 2:
-            seatsEmpty -= 1
-            break
-        jj += 1
-    # up
-    ii = i
-    jj = j-1
-    while 0 < ii < height and 0 < jj < width:
-        if m[ii][jj] == 1:
-            break
-        if m[ii][jj] == 2:
-            seatsEmpty -= 1
-            break
-        jj += -1
-    # up-right
-    ii = i+1
-    jj = j+1
-    while 0 < ii < height and 0 < jj < width:
-        if m[ii][jj] == 1:
-            break
-        if m[ii][jj] == 2:
-            seatsEmpty -= 1
-            break
-        ii += 1
-        jj += 1
-
-    # up-left
-    ii = i-1
-    jj = j+1
-    while 0 < ii < height and 0 < jj < width:
-        if m[ii][jj] == 1:
-            break
-        if m[ii][jj] == 2:
-            seatsEmpty -= 1
-            break
-        ii += -1
-        jj += 1
-    # up-right
-    ii = i+1
-    jj = j-1
-    while 0 < ii < height and 0 < jj < width:
-        if m[ii][jj] == 1:
-            break
-        if m[ii][jj] == 2:
-            seatsEmpty -= 1
-            break
-        ii += 1
-        jj += -1
-    # up-right
-    ii = i-1
-    jj = j-1
-    while 0 < ii < height and 0 < jj < width:
-        if m[ii][jj] == 1:
-            break
-        if m[ii][jj] == 2:
-            seatsEmpty -= 1
-            break
-        ii += -1
-        jj += -1
-    return seatsEmpty
-
-def show(m):
-    width = len(m[0])
-    height = len(m)
-    for i in range(1, height-1):
-        print(m[i][1:width-1])
+INF = 2 ** 31 - 1
 
 def main(lines):
-    m = []
+    matrix = []
     for line in lines:
-        m.append([0])
-        for char in line:
-            if char == 'L':
-                m[-1].append(1)
-            if char == '.':
-                m[-1].append(0)
-        m[-1].append(0)
-    width = len(m[0])
-    height = len(m)
-    m2 = [[0] * width] + m + [[0] * width]
-    width = len(m2[0])
-    height = len(m2)
-    count = 0
-    while True:
-        nextM = copy(m2)
-        changes = 0
-        for i in range(1, height-1):
-            for j in range(1, width-1):
-                if m2[i][j] == 1:
-                    if seatsFree(i, j, m2) == 8:
-                        nextM[i][j] = 2
-                        changes += 1
-                elif m2[i][j] == 2:
-                    if seatsFree(i, j, m2) < 5:
-                        nextM[i][j] = 1
-                        changes += 1
-        m2 = copy(nextM)
-        if changes == 0:
-            break
-    #show(m2)
-    count = 0
-    for line in m2:
-        for seat in line:
-            if seat == 2:
-                count += 1
-    print(count)
+        matrix.append([])
+        for char in line.strip():
+            matrix[-1].append(char)
 
-def copy(m):
-    n = []
-    for mm in m:
-        n.append([])
-        for i in mm:
-            n[-1].append(i)
-    return n
+    print(predictSeats(matrix, 4, 1))
+    print(predictSeats(matrix, 5, INF))
 
-def main2(lines):
-    m = []
-    for line in lines:
-        m.append([0])
-        for char in line:
-            if char == 'L':
-                m[-1].append(1)
-            if char == '.':
-                m[-1].append(0)
-        m[-1].append(0)
-    width = len(m[0])
-    height = len(m)
-    m2 = [[0] * width] + m + [[0] * width]
-    width = len(m2[0])
-    height = len(m2)
-    count = 0
-    while True:
-        nextM = copy(m2)
+def predictSeats(matrix, tolerance, lookDistance):
+    lines = deepcopy(matrix)
+    changes = 1
+    seatsFilled = 0
+    while changes:
+        nextLines = deepcopy(lines)
         changes = 0
-        count += 1
-        for i in range(1, height-1):
-            for j in range(1, width-1):
-                if m2[i][j] == 1:
-                    if seatsFree2(i, j, m2) == 8:
-                        nextM[i][j] = 2
-                        changes += 1
-                elif m2[i][j] == 2:
-                    if seatsFree2(i, j, m2) < 4:
-                        nextM[i][j] = 1
-                        changes += 1
-        m2 = copy(nextM)
-        if changes == 0 or count == -1:
-            break
-    #show(m2)
-    count = 0
-    for line in m2:
-        for seat in line:
-            if seat == 2:
-                count += 1
-    print(count)
+        for i in range(len(lines)):
+            for j in range(len(lines[0])):
+                if lines[i][j] == EMPTY and adjSeatsFilled(i, j, lines, dist=lookDistance) == 0:
+                    nextLines[i][j] = FILLED
+                    seatsFilled += 1
+                    changes += 1
+                if lines[i][j] == FILLED and adjSeatsFilled(i, j, lines, dist=lookDistance) >= tolerance:
+                    nextLines[i][j] = EMPTY
+                    seatsFilled -= 1
+                    changes += 1
+        lines = deepcopy(nextLines)
+    return seatsFilled
+
+def adjSeatsFilled(i, j, matrix, dist=1):
+    dirs = [(1,0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, -1), (-1, 1)]
+    max_i = len(matrix)
+    max_j = len(matrix[0])
+    adjacentSeatsFilled = 0
+    for direction in dirs:
+        for d in range(1, dist+1):
+            ii = i + d * direction[0]
+            jj = j + d * direction[1]
+            if 0 <= ii < max_i and 0 <= jj < max_j:
+                if matrix[ii][jj] == EMPTY:
+                    break
+                elif matrix[ii][jj] == FILLED:
+                    adjacentSeatsFilled += 1
+                    break
+            else:
+                break
+    return adjacentSeatsFilled
 
 def run(function, input_file):
-    with open(input_file, "r") as fh:
-        function(fh.readlines())
+    try:
+        with open(input_file, "r") as fh:
+            lines = fh.readlines()
+    except:
+        print(f"{input_file} not found in current directory. Skipping...")
+        return
+    function(lines)
 
 print("TEST:")
 run(main, "test.txt")
-run(main2, "test.txt")
 print("\nMAIN:")
 run(main, "input.txt")
-run(main2, "input.txt")
