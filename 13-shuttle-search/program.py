@@ -15,26 +15,12 @@ def main(lines):
     print(f"{min_wait_bus} is leaving next! Wait time {min_wait_time} mins.")
     print(f"Puzzle 1: {min_wait_bus * min_wait_time}\n")
 
-    sorted_timetable = []
-    while len(sorted_timetable) != len(timetable):
-        smallest = 200000000
-        for i, b in timetable:
-            if b < smallest and (i, b) not in sorted_timetable:
-                small_i = i
-                small_b = b
-                smallest = small_b
-        sorted_timetable.append((small_i, small_b))
-    timetable = sorted_timetable
-
-    print(timetable)
-    new_bus_times = timetable
     t = 0
-    synced = 0
     jump_distance = 1
     consec = 0
     searching = False
     while True:
-        times = [abs((t + i) % b) for (i, b) in new_bus_times]
+        times = [abs((t + i) % b) for (i, b) in timetable]
         # print(f"{t}: {times}")
         if times[consec] == 0 and not searching:
             searching = True
