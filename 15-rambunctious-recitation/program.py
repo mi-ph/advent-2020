@@ -1,13 +1,9 @@
 def play(startingNumbers, dinnerTime):
     seen = {}
-    t = 1
-    startingNumbers = startingNumbers.copy()
-    startingNumbers.reverse()
-    while t <= dinnerTime:
-        num = startingNumbers.pop() if startingNumbers else nextNum
+    for t in range(1, dinnerTime + 1):
+        num = startingNumbers[t-1] if t <= len(startingNumbers) else nextNum
         nextNum = 0 if num not in seen else t - seen[num]
         seen.update({num: t})
-        t += 1
     return num
 
 def main(lines):
@@ -22,7 +18,6 @@ def run(function, input_file):
     except:
         print(f"{input_file} not found in current directory. Skipping...")
         return
-
     function(lines)
 
 print("TEST:")
