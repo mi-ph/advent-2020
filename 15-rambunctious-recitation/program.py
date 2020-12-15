@@ -1,26 +1,19 @@
-def main(lines):
-    nums = [int(num) for num in lines[0].split(',')]
-
+def play(startingNumbers, dinnerTime):
     seen = {}
     t = 1
-    for num in nums:
-        new = num not in seen
+    startingNumbers = startingNumbers.copy()
+    startingNumbers.reverse()
+    while t <= dinnerTime:
+        num = startingNumbers.pop() if startingNumbers else nextNum
+        nextNum = 0 if num not in seen else t - seen[num]
         seen.update({num: t})
         t += 1
+    return num
 
-    while t <= 30000000:
-        if new:
-            num = 0
-        else:
-            num = t - lastSeen - 1
-        new = num not in seen
-        nums.append(num)
-        if num in seen:
-            lastSeen = seen[num]
-        seen.update({num: t})
-        t += 1
-
-    print(nums[-1])
+def main(lines):
+    nums = [int(num) for num in lines[0].split(',')]
+    print(play(nums, 2020))
+    print(play(nums, 30000000))
 
 def run(function, input_file):
     try:
