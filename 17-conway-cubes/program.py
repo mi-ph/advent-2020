@@ -1,12 +1,12 @@
 def neighbours(square):
-    neighbours = []
-    i, j, k, l = square
-    for x in range(i - 1, i + 2):
-        for y in range(j - 1, j + 2):
-            for z in range(k - 1, k + 2):
-                for w in range(l - 1, l + 2):
-                    if (i, j, k, l) != (x, y, z, w):
-                        neighbours.append((x, y, z, w))
+    neighbours = [tuple()]
+    dims = len(square)
+    for dim in range(dims):
+        for neighbour in neighbours.copy():
+            neighbours.remove(neighbour)
+            for i in range(square[dim]-1, square[dim]+2):
+                neighbours.append(neighbour + (i,))
+    neighbours.remove(square)
     return neighbours
 
 def numNeighbours(square, active):
@@ -16,16 +16,8 @@ def numNeighbours(square, active):
             n += 1
     return n
 
-def main(lines):
-    activeSquares = set()
-    z = 0
-    w = 0
-    for i in range(len(lines)):
-        for j in range(len(lines[0])):
-            if lines[i][j] == '#':
-                activeSquares.add((i, j, z, w))
-
-    for _ in range(6):
+def conway(activeSquares, iterations):
+    for _ in range(iterations):
         nextActiveSquares = set()
         for square in activeSquares:
             n = numNeighbours(square, activeSquares)
@@ -36,8 +28,18 @@ def main(lines):
                 if n == 3:
                     nextActiveSquares.add(neighbour)
         activeSquares = nextActiveSquares.copy()
+    return len(activeSquares)
 
-    print(len(activeSquares))
+def main(lines):
+    activeSquares3D = set()
+    activeSquares4D = set()
+    for i in range(len(lines)):
+        for j in range(len(lines[0])):
+            if lines[i][j] == '#':
+                activeSquares3D.add((i, j, 0))
+                activeSquares4D.add((i, j, 0, 0))
+    print(conway(activeSquares3D, 6))
+    print(conway(activeSquares4D, 6))
 
 def run(function, input_file):
     try:
