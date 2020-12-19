@@ -1,3 +1,6 @@
+def isSymbol(char):
+    return (char >= '0' and char <= '9') or char == '+' or char == '*'
+
 def operate(n, op, n2):
     if op == '+':
         return n + n2
@@ -6,8 +9,8 @@ def operate(n, op, n2):
 
 def evaluate(puzzle):
     i = 0
-    LHS = None
-    op = None
+    LHS = 0
+    op = '+'
     while i < len(puzzle):
         if puzzle[i] == '(':
             j = 1
@@ -18,18 +21,10 @@ def evaluate(puzzle):
                 elif puzzle[i+j] == ')':
                     openedBrackets -= 1
                 j += 1
-            operand = evaluate(puzzle[i+1:i+j-1])
-            if LHS is None:
-                LHS = operand
-            else:
-                LHS = operate(LHS, op, operand)
+            LHS = operate(LHS, op, evaluate(puzzle[i+1:i+j-1]))
             i += j
         elif puzzle[i] >= '0' and puzzle[i] <= '9':
-            operand = int(puzzle[i])
-            if LHS is None:
-                LHS = operand
-            else:
-                LHS = operate(LHS, op, operand)
+            LHS = operate(LHS, op, int(puzzle[i]))
         elif puzzle[i] == '+' or puzzle[i] == '*':
             op = puzzle[i]
         i += 1
@@ -37,24 +32,21 @@ def evaluate(puzzle):
 
 def addBrackets(puzzle):
     i = 0
-    things = 0
+    symbols = 0
     locs = []
     while i < len(puzzle):
         if puzzle[i] == '+':
-            locs.append(things)
-        if (puzzle[i] >= '0' and puzzle[i] <= '9') or puzzle[i] == '+' or puzzle[i] == '*':
-            things += 1
+            locs.append(symbols)
+        if isSymbol(puzzle[i]):
+            symbols += 1
         i += 1
 
-    def isSymbol(char):
-        return (char >= '0' and char <= '9') or char == '+' or char == '*'
-
     for loc in locs:
-        things = 0
+        symbols = 0
         i = 0
         while i < len(puzzle):
             if isSymbol(puzzle[i]):
-                if things == loc:
+                if symbols == loc:
                     # travel right
                     j = 0
                     inserted = False
@@ -88,7 +80,7 @@ def addBrackets(puzzle):
                             if not brackets:
                                 puzzle.insert(i+j, '(')
                                 inserted = True
-                things += 1
+                symbols += 1
             i += 1
     return puzzle
 
