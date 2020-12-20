@@ -1,9 +1,9 @@
 def main(lines):
-    rules, entries = parse(lines)
-    puzzle(rules, entries)
+    rules, messages = parse(lines)
+    puzzle(rules, messages)
     rules.update({8: [[42], [42, 8]]})
     rules.update({11: [[42, 31], [42, 11, 31]]})
-    puzzle(rules, entries)
+    puzzle(rules, messages)
 
 def puzzle(rules, messages):
     nValid = 0
@@ -27,7 +27,7 @@ def solveRule(message, rules, indices, rule):
             if not inputIndices:
                 break
             if isinstance(nextRule, str):
-                for index in indices:
+                for index in inputIndices:
                     if index < len(message) and message[index] == nextRule:
                         outputIndices.add(index + 1)
             else:
